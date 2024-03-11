@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang='de'>
+
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='stylesheet'
+        href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200' />
+    <title>Timer</title>
+</head>
+
+<body class='default-scheme'>
+    <nav class='timer-wrapers'>
+        <nav class='timer-wrapper' id='timer-wrapper-1'>
+            <button class='line-removal-button material-symbols-outlined' id='line-removal-button-1'
+                onclick='reportAction(`remove_person_1`)'>-</button>
+            <nav class='times-wrapper' id='times-wrapper-1'>
+                <nav class='timer-time' id='timer-time-1'>0.000</nav>
+                <nav class='reaction-time' id='reaction-time-1'>Reaction: 0.150ms</nav>
+            </nav>
+            <button class='fall-button' id='button-fall-1' onclick='reportAction(`fall_1`)'>fall</button>
+            <button class='line-addition-button material-symbols-outlined' id='line-addition-button-1'
+                onclick='reportAction(`add_person_1`)'>+</button>
+        </nav>
+        <nav class='timer-wrapper' id='timer-wrapper-2'>
+            <button class='line-removal-button material-symbols-outlined' id='line-removal-button-2'
+                onclick='reportAction(`remove_person_2`)'>-</button>
+            <nav class='times-wrapper' id='times-wrapper-2'>
+                <nav class='timer-time' id='timer-time-2'>0.000</nav>
+                <nav class='reaction-time' id='reaction-time-2'>Reaction: 0.150ms</nav>
+            </nav>
+            <button class='fall-button' id='button-fall-2' onclick='reportAction(`fall_2`)'>fall</button>
+            <button class='line-addition-button material-symbols-outlined' id='line-addition-button-2'
+                onclick='reportAction(`add_person_2`)'>+</button>
+        </nav>
+    </nav>
+    <nav class='controls-wrapper'>
+        <nav class='progress' id='main_progress'></nav>
+        <button class='main-button' id='main-button' onclick='reportAction(`start`)'>START</button>
+    </nav>
+</body>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap');
+    @media (prefers-color-scheme: dark) {
+        .default-scheme {
+            --main-color: #333333;
+            --help-color: #D65A31;
+            --back-color: #222222;
+            --tone-color: #ffffff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        .default-scheme {
+            --main-color: #f8efcc;
+            --help-color: #ee6a0f;
+            --back-color: #589ca8;
+            --tone-color: #042850;
+        }
+    }
+
+    .dark-scheme {
+        --main-color: #333333;
+        --help-color: #D65A31;
+        --back-color: #222222;
+        --tone-color: #ffffff;
+    }
+
+    .light-scheme {
+        --main-color: #f8efcc;
+        --help-color: #ee6a0f;
+        --back-color: #589ca8;
+        --tone-color: #042850;
+    }
+
+    * {
+        padding: 0;
+        margin: 0;
+        color: var(--tone-color);
+        --border-width: 3px;
+        user-select: none;
+        font-family: 'Kode Mono', monospace;
+        transition: opacity 0.25s, background-color 0.5s, color 0.5s, border 0.5s, box-shadow 0.5s, background-image 0.5s;
+    }
+
+    body {
+        background-color: var(--back-color);
+        display: flex;
+        justify-content: space-evenly;
+        flex-direction: column;
+        align-items: center;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background-size: calc(100vh * 0.048381743) calc(100vh * 0.048381743);
+        background-image:
+            linear-gradient(to right, var(--main-color) 2px, transparent 1px),
+            linear-gradient(to bottom, var(--main-color) 2px, transparent 1px);
+    }
+
+    .timer-wrapers {
+        width: calc(95% + var(--border-width) + var(--border-width));
+        height: 70%;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+    }
+
+    .controls-wrapper {
+        width: 95%;
+        height: 15%;
+        border: var(--tone-color) solid var(--border-width);
+        border-radius: 20px;
+        background-color: var(--main-color);
+        box-shadow: 5px 5px var(--tone-color);
+    }
+
+    .timer-wrapper {
+        width: 48.5%;
+        height: 100%;
+        border: var(--tone-color) solid var(--border-width);
+        border-radius: 20px;
+        background-color: var(--main-color);
+        box-shadow: 5px 5px var(--tone-color);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: width 0.5s, opacity 0.5s, background-color 0.5s, border 0.5s, box-shadow 0.5s;
+    }
+
+    .line-removal-button {
+        width: 12.5%;
+        height: 15%;
+        margin-left: 87.5%;
+        border: 0;
+        background-color: transparent;
+        font-size: 48px;
+        border-style: dashed;
+        border-color: var(--tone-color);
+        border-bottom-width: 3px;
+        border-left-width: 3px;
+    }
+
+    .line-addition-button {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background-color: transparent;
+        font-size: 48px;
+        display: none;
+    }
+
+    .material-symbols-outlined {
+        font-variation-settings:
+            'opsz' 48,
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0
+    }
+
+    .times-wrapper {
+        height: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .fall-button {
+        height: 10%;
+        border: 0;
+        border-bottom-right-radius: 16px;
+        border-bottom-left-radius: 16px;
+        background-color: var(--help-color);
+        border-style: dashed;
+        border-color: var(--tone-color);
+        border-top-width: 3px;
+        font-size: 2.5vh;
+        position: relative;
+        transition: opacity 0.5s, height 0.5s, border 0.5s, color 0.5s;
+    }
+
+    .timer-time {
+        font-size: 20vh;
+    }
+
+    .main-button {
+        width: 100%;
+        height: 100%;
+        border-radius: 16px;
+        background-color: transparent;
+        border: 0;
+        font-size: 5vh;
+        position: relative;
+        top: -100%;
+    }
+
+    .progress {
+        width: 100%;
+        height: 100%;
+        border-radius: 16px;
+        background-color: var(--help-color);
+        transition: width 3s linear;
+    }
+</style>
+<script>
+
+    const STATE_IDLE = 1
+    const STATE_ARRANGING = 2
+    const STATE_BEEPING = 3
+    const STATE_REACTION = 4
+    const STATE_RACING = 5
+    const STATE_SHOWTIME = 6
+    const states = ['STATE_IDLE', 'STATE_ARRANGING', 'STATE_BEEPING', 'STATE_REACTION', 'STATE_RACING', 'STATE_SHOWTIME']
+    var race_state_1 = 0;
+    var last_race_state_1 = 0;
+    var race_state_2 = 0;
+    var last_race_state_2 = 0;
+
+    var requestInProgress = false;
+    var timer1milliseconds = 0;
+    var timer2milliseconds = 0;
+    var timer_interval_1;
+    var timer_interval_2;
+
+    var HAS_climbtime_1 = false;
+    var HAS_reaction_1 = false;
+    var HAS_climbtime_2 = false;
+    var HAS_reaction_2 = false;
+    function timerticker_1() {
+        timer1milliseconds += 100;
+        document.getElementById('timer-time-1').innerText = `${(timer1milliseconds / 1000.0).toFixed(3)}s`;
+    }
+    function timerticker_2() {
+        timer2milliseconds += 100;
+        document.getElementById('timer-time-2').innerText = `${(timer2milliseconds / 1000.0).toFixed(3)}s`;
+    }
+    function makeRequest() {
+        if (!requestInProgress) {
+            requestInProgress = true;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    requestInProgress = false; // Reset request status
+                    if (this.status == 200) {
+                        var variables = this.responseText.split('\n');
+                        var falschstart_1 = variables[0];
+                        var climbtime_1 = variables[1];
+                        var reaction_1 = variables[2];
+                        var race_state_1 = parseInt(variables[3]); // Parse as integer
+                        var falschstart_2 = variables[4];
+                        var climbtime_2 = variables[5];
+                        var reaction_2 = variables[6];
+                        var race_state_2 = parseInt(variables[7]); // Parse as integer
+
+                        if (climbtime_1 != '-1' && !HAS_climbtime_1) {
+                            document.getElementById('timer-time-1').innerText = `${(climbtime_1 - 0) / 1000.0}s`;
+                            HAS_climbtime_1 = true;
+                        }
+                        if (reaction_1 != '-1' && !HAS_reaction_1) {
+                            document.getElementById('reaction-time-1').innerText = `Reaction: ${reaction_1}ms`;
+                            HAS_reaction_1 = true;
+                        }
+                        if (climbtime_2 != '-1' && !HAS_climbtime_2) {
+                            document.getElementById('timer-time-2').innerText = `${(climbtime_2 - 0) / 1000.0}s`;
+                            HAS_climbtime_2 = true;
+                        }
+                        if (reaction_2 != '-1' && !HAS_reaction_2) {
+                            document.getElementById('reaction-time-2').innerText = `Reaction: ${reaction_2}ms`;
+                            HAS_reaction_2 = true;
+                        }
+                        if (race_state_1 != last_race_state_1) {
+                            console.info('1 CHANGED STATE TO ' + race_state_1);
+                            last_race_state_1 = race_state_1; // Update last_race_state_1
+                            document.title = states[race_state_1 - 1];
+                            if (race_state_1 == STATE_RACING) {
+                                timer_interval_1 = setInterval(timerticker_1, 100);
+                            } else if (race_state_1 == STATE_SHOWTIME) {
+                                clearInterval(timer_interval_1);
+                            } else if (race_state_1 == STATE_BEEPING) {
+                                some();
+                            }
+                        }
+                        if (race_state_2 != last_race_state_2) {
+                            console.info('2 CHANGED STATE TO ' + race_state_2);
+                            last_race_state_2 = race_state_2; // Update last_race_state_2
+                            document.title = states[race_state_2 - 2];
+                            if (race_state_2 == STATE_RACING) {
+                                timer_interval_2 = setInterval(timerticker_2, 100);
+                            } else if (race_state_2 == STATE_SHOWTIME) {
+                                clearInterval(timer_interval_2);
+                            }
+                        }
+                    } else {
+                        console.error('Request failed with status: ' + this.status);
+                    }
+                }
+            };
+            xhttp.open('GET', '/variables', true);
+            xhttp.send();
+        }
+    }
+    function some() {
+        document.getElementById('main_progress').style.transition = 'width 0s linear';
+        document.getElementById('main_progress').style.width = '0%'
+        setTimeout(() => {
+            document.getElementById('main_progress').style.transition = 'width 3s linear';
+            document.getElementById('main_progress').style.width = '100%'
+        }, 1);
+    }
+    function fome() {
+        document.getElementById('main_progress').style.transition = 'width 0s linear';
+        document.getElementById('main_progress').style.width = '0%'
+    }
+    interval = setInterval(makeRequest, 1000);
+
+    function reportAction(action) {
+        console.info(action);
+        var xhttp = new XMLHttpRequest();
+        xhttp.open('POST', '/action', true);
+        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+        if (action == 'remove_person_1') {
+            document.getElementById('timer-wrapper-1').style.width = '5%'
+            document.getElementById('timer-wrapper-1').style.opacity = '0.75'
+            document.getElementById('timer-wrapper-2').style.width = '92.5%'
+            document.getElementById('timer-wrapper-2').style.opacity = '1'
+
+            document.getElementById('line-addition-button-1').style.display = 'block'
+            document.getElementById('line-removal-button-1').style.display = 'none'
+            document.getElementById('line-removal-button-2').style.opacity = '0'
+            document.getElementById('times-wrapper-1').style.display = 'none'
+            document.getElementById('button-fall-1').style.display = 'none'
+
+
+        }
+        else if (action == 'add_person_1') {
+            document.getElementById('timer-wrapper-1').style.width = '48.5%'
+            document.getElementById('timer-wrapper-1').style.opacity = '1'
+            document.getElementById('timer-wrapper-2').style.width = '48.5%'
+            document.getElementById('timer-wrapper-2').style.opacity = '1'
+
+            document.getElementById('line-addition-button-1').style.display = 'none'
+            document.getElementById('line-removal-button-1').style.display = 'block'
+            document.getElementById('line-removal-button-2').style.opacity = '1'
+            document.getElementById('times-wrapper-1').style.display = 'flex'
+            document.getElementById('button-fall-1').style.display = 'block'
+
+
+        }
+        else if (action == 'remove_person_2') {
+            document.getElementById('timer-wrapper-2').style.width = '5%'
+            document.getElementById('timer-wrapper-2').style.opacity = '0.75'
+            document.getElementById('timer-wrapper-1').style.width = '92.5%'
+            document.getElementById('timer-wrapper-1').style.opacity = '1'
+
+            document.getElementById('line-addition-button-2').style.display = 'block'
+            document.getElementById('line-removal-button-2').style.display = 'none'
+            document.getElementById('line-removal-button-1').style.opacity = '0'
+            document.getElementById('times-wrapper-2').style.display = 'none'
+            document.getElementById('button-fall-2').style.display = 'none'
+        }
+        else if (action == 'add_person_2') {
+            document.getElementById('timer-wrapper-1').style.width = '48.5%'
+            document.getElementById('timer-wrapper-1').style.opacity = '1'
+            document.getElementById('timer-wrapper-2').style.width = '48.5%'
+            document.getElementById('timer-wrapper-2').style.opacity = '1'
+
+            document.getElementById('line-addition-button-2').style.display = 'none'
+            document.getElementById('line-removal-button-2').style.display = 'block'
+            document.getElementById('line-removal-button-1').style.opacity = '1'
+            document.getElementById('times-wrapper-2').style.display = 'flex'
+            document.getElementById('button-fall-2').style.display = 'block'
+
+
+        }
+        else if (action == 'fall_1') {
+            document.getElementById('timer-wrapper-1').style.backgroundColor = 'var(--help-color)';
+            document.getElementById('button-fall-1').style.opacity = '0'
+            document.getElementById('line-removal-button-1').style.opacity = '0'
+            document.getElementById('timer-time-1').innerText = 'FALL';
+        }
+        else if (action == 'fall_2') {
+            document.getElementById('timer-wrapper-2').style.backgroundColor = 'var(--help-color)';
+            document.getElementById('button-fall-2').style.opacity = '0'
+            document.getElementById('line-removal-button-2').style.opacity = '0'
+            document.getElementById('timer-time-2').innerText = 'FALL';
+        }
+        else if (action == 'start') {
+            document.getElementById('main-button').onclick = function () {
+                reportAction('reset');
+            };
+            document.getElementById('main-button').innerText = 'RESET'
+        }
+        else if (action == 'reset') {
+            document.getElementById('main-button').onclick = function () {
+                reportAction('start');
+            };
+            document.getElementById('main-button').innerText = 'START'
+            document.getElementById('line-removal-button-1').style.opacity = '1'
+            document.getElementById('line-removal-button-2').style.opacity = '1'
+            document.getElementById('line-removal-button-1').style.display = 'block'
+            document.getElementById('line-removal-button-2').style.display = 'block'
+            document.getElementById('button-fall-1').style.opacity = '1'
+            document.getElementById('button-fall-2').style.opacity = '1'
+            document.getElementById('timer-wrapper-1').style.backgroundColor = 'var(--main-color)';
+            document.getElementById('timer-wrapper-2').style.backgroundColor = 'var(--main-color)';
+            document.getElementById('timer-time-1').innerText = '0.000';
+            document.getElementById('timer-time-2').innerText = '0.000';
+            document.getElementById('timer-wrapper-1').style.width = '48.5%'
+            document.getElementById('timer-wrapper-2').style.width = '48.5%'
+            document.getElementById('line-addition-button-1').style.display = 'none'
+            document.getElementById('line-addition-button-2').style.display = 'none'
+            document.getElementById('times-wrapper-1').style.display = 'flex'
+            document.getElementById('times-wrapper-2').style.display = 'flex'
+            document.getElementById('timer-wrapper-1').style.opacity = '1'
+            document.getElementById('timer-wrapper-2').style.opacity = '1'
+            document.getElementById('button-fall-1').style.display = 'block'
+            document.getElementById('button-fall-2').style.display = 'block'
+
+            clearInterval(timer_interval_1);
+            clearInterval(timer_interval_2);
+            race_state_1 = STATE_IDLE;
+            last_race_state_1 = STATE_IDLE;
+            race_state_2 = STATE_IDLE;
+            last_race_state_2 = STATE_IDLE;
+
+            requestInProgress = false;
+            timer1milliseconds = 0;
+            timer2milliseconds = 0;
+
+            HAS_climbtime_1 = false;
+            HAS_reaction_1 = false;
+            HAS_climbtime_2 = false;
+            HAS_reaction_2 = false;
+        }
+
+
+        xhttp.send('action=' + action);
+    }
+
+    function toggleScheme() {
+        if (document.getElementsByTagName('body')[0].classList == 'default-scheme' || document.getElementsByTagName('body')[0].classList == 'light-scheme') document.getElementsByTagName('body')[0].classList = 'dark-scheme';
+        else if (document.getElementsByTagName('body')[0].classList == 'dark-scheme') document.getElementsByTagName('body')[0].classList = 'light-scheme';
+    }
+</script>
+
+</html>
